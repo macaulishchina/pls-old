@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.url">jdbc:mysql://127.0.0.1:3306/pls?serverTimezone=Hongkong&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+
+    <!-- DB schema will be update if needed -->
+    <property name="hbm2ddl.auto">validate</property>
+    <!--&lt;!&ndash; 可以将向数据库发送的SQL语句显示出来 &ndash;&gt;-->
+    <!--<property name="hibernate.show_sql">true</property>-->
+    <!--&lt;!&ndash; 格式化SQL语句 &ndash;&gt;-->
+    <!--<property name="hibernate.format_sql">true</property>-->
+    <!-- hibernate的方言 -->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+    <property name="connection.autocommit">true</property>
+    <mapping resource="hbm/FtpInfoEntity.hbm.xml"/>
+    <mapping resource="hbm/TaskEntity.hbm.xml"/>
+    <mapping resource="hbm/UserEntity.hbm.xml"/>
+
+  </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="top.macaulish.PLS.entity.FtpInfoEntity" table="ftp_info" schema="pls">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+        </id>
+        <property name="guid">
+            <column name="guid" sql-type="char(36)" length="36"/>
+        </property>
+        <property name="taskGuid">
+            <column name="task_guid" sql-type="char(36)" length="36" not-null="true"/>
+        </property>
+        <property name="ip">
+            <column name="ip" sql-type="char(15)" length="15"/>
+        </property>
+        <property name="port">
+            <column name="port" sql-type="char(5)" length="5"/>
+        </property>
+        <property name="username">
+            <column name="username" sql-type="varchar(20)" length="20"/>
+        </property>
+        <property name="password">
+            <column name="password" sql-type="varchar(20)" length="20"/>
+        </property>
+        <property name="path">
+            <column name="path" sql-type="varchar(200)" length="200"/>
+        </property>
+        <set name="tasksById" inverse="true">
+            <key>
+                <column name="ftp_info_id" not-null="true"/>
+            </key>
+            <one-to-many not-found="ignore" class="top.macaulish.PLS.entity.TaskEntity"/>
+        </set>
+    </class>
+</hibernate-mapping>
