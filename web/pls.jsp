@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Hello World</title>
+    <title>Welcome to PLS</title>
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link rel="stylesheet" href="static/css/pls.css">
@@ -31,7 +31,7 @@
     <a class="btn btn-outline-primary" href="#">admin</a>
 </nav>
 
-<div class="container container-body">
+<div id="taskManager" class="container container-body">
     <div class="row border border-light mb-3 text-center task-room">
         <div class="col-md-4 card mb-4 shadow-sm task-card">
             <div class="card-header">
@@ -122,7 +122,6 @@
                     <a href="#" class="btn btn-lg btn-secondary" hidden>Pause</a>
                     <a href="#" class="btn btn-lg btn-primary">Download</a>
                     <a href="#" class="btn btn-lg btn-dark" hidden>Delete</a>
-
                 </div>
             </div>
         </div>
@@ -172,7 +171,7 @@
 </div>
 
 <%--popup frame : new task--%>
-<div class="modal fade bd-example-modal-lg " id="newTaskFrame" tabindex="-1" role="dialog" aria-labelledby="taskDetailTitle" aria-hidden="true">
+<div id="newTaskFrame" class="modal fade bd-example-modal-lg " tabindex="-1" role="dialog" aria-labelledby="taskDetailTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content popup-dialog-new-task">
             <div class="modal-header">
@@ -186,7 +185,7 @@
                     <div class="form-group row">
                         <label for="newTaskName" class="col-sm-3 col-form-label"><h5 class="form-label">Task Name</h5></label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="newTaskName" aria-describedby="taskNameHelp" placeholder="Please input your task name">
+                            <input type="text" v-model="taskName" class="form-control" id="newTaskName" aria-describedby="taskNameHelp" placeholder="Please input your task name"/>
                             <small id="taskNameHelp" class="form-text text-muted">Try to take a unique task name.</small>
                         </div>
                     </div>
@@ -194,26 +193,19 @@
                     <div class="form-group row">
                         <label for="preModelSelect" class="col-sm-3 col-form-label"><h5 class="form-label">Choose Model</h5></label>
                         <div class="col-sm-9">
-                            <select class="custom-select" id="preModelSelect">
-                                <option selected value="0">Select the model...</option>
+                            <select v-model="model_guid" class="custom-select" id="preModelSelect">
+                                <option selected value="">Select the model...</option>
                                 <option value="1">Traffic Model</option>
                                 <option value="2">Factory Model</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label for="newTaskName" class="col-sm-3 col-form-label"><h5 class="form-label">Choose Files</h5></label>
-                        <div class="col-sm-9">
-                            <input type="file" id="chooseFiles" class="form-control" multiple="multiple" aria-describedby="chooseFilesHelp" />
-                            <small id="chooseFilesHelp" class="form-text text-muted">You can choose more than one file.</small>
-                        </div>
-                    </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row" hidden>
                         <div class="offset-sm-3 col-sm-9">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="autoSaveCheck">
+                                <input v-model="auto_if" class="form-check-input" type="checkbox" id="autoSaveCheck">
                                 <label class="form-check-label" for="autoSaveCheck">
                                     Auto Download
                                 </label>
@@ -221,10 +213,10 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row" hidden>
                         <label for="autoSavePath" class="col-sm-3 col-form-label"><h5 class="form-label">Save Path</h5></label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="autoSavePath" placeholder="Input the path here">
+                            <input v-model="auto_path" type="text" class="form-control" id="autoSavePath" placeholder="Input the path here">
                         </div>
                     </div>
 
@@ -239,7 +231,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-block btn-primary">Launch</button>
+                <button @click="newTask()" type="button" class="btn btn-block btn-primary" data-dismiss="modal">Create</button>
             </div>
         </div>
     </div>
@@ -297,6 +289,8 @@
 <script src="static/js/jquery-3.3.1.min.js"></script>
 <script src="static/js/popper.1.14.3.min.js"></script>
 <script src="static/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script></body>
+<script src="https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/pls.js"></script>
 
-</body>
 </html>

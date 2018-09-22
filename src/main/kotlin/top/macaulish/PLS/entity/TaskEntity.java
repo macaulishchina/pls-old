@@ -9,13 +9,10 @@ public class TaskEntity {
     private String taskname;
     private String state;
     private String targetModel;
-    private Integer ftpInfoId;
-    private Integer autoDownload;
-    private String downloadPath;
     private Timestamp createTime;
-    private int creatorId;
-    private FtpInfoEntity ftpInfoByFtpInfoId;
-    private UserEntity userByCreatorId;
+    private Integer creatorId;
+    private String savePath;
+    private String saveHost;
 
     public int getId() {
         return id;
@@ -57,30 +54,6 @@ public class TaskEntity {
         this.targetModel = targetModel;
     }
 
-    public Integer getFtpInfoId() {
-        return ftpInfoId;
-    }
-
-    public void setFtpInfoId(Integer ftpInfoId) {
-        this.ftpInfoId = ftpInfoId;
-    }
-
-    public Integer getAutoDownload() {
-        return autoDownload;
-    }
-
-    public void setAutoDownload(Integer autoDownload) {
-        this.autoDownload = autoDownload;
-    }
-
-    public String getDownloadPath() {
-        return downloadPath;
-    }
-
-    public void setDownloadPath(String downloadPath) {
-        this.downloadPath = downloadPath;
-    }
-
     public Timestamp getCreateTime() {
         return createTime;
     }
@@ -89,12 +62,28 @@ public class TaskEntity {
         this.createTime = createTime;
     }
 
-    public int getCreatorId() {
+    public Integer getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(int creatorId) {
+    public void setCreatorId(Integer creatorId) {
         this.creatorId = creatorId;
+    }
+
+    public String getSavePath() {
+        return savePath;
+    }
+
+    public void setSavePath(String savePath) {
+        this.savePath = savePath;
+    }
+
+    public String getSaveHost() {
+        return saveHost;
+    }
+
+    public void setSaveHost(String saveHost) {
+        this.saveHost = saveHost;
     }
 
     @Override
@@ -103,36 +92,19 @@ public class TaskEntity {
         if (o == null || getClass() != o.getClass()) return false;
         TaskEntity that = (TaskEntity) o;
         return id == that.id &&
-                creatorId == that.creatorId &&
                 Objects.equals(guid, that.guid) &&
                 Objects.equals(taskname, that.taskname) &&
                 Objects.equals(state, that.state) &&
                 Objects.equals(targetModel, that.targetModel) &&
-                Objects.equals(ftpInfoId, that.ftpInfoId) &&
-                Objects.equals(autoDownload, that.autoDownload) &&
-                Objects.equals(downloadPath, that.downloadPath) &&
-                Objects.equals(createTime, that.createTime);
+                Objects.equals(createTime, that.createTime) &&
+                Objects.equals(creatorId, that.creatorId) &&
+                Objects.equals(savePath, that.savePath) &&
+                Objects.equals(saveHost, that.saveHost);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, guid, taskname, state, targetModel, ftpInfoId, autoDownload, downloadPath, createTime, creatorId);
-    }
-
-    public FtpInfoEntity getFtpInfoByFtpInfoId() {
-        return ftpInfoByFtpInfoId;
-    }
-
-    public void setFtpInfoByFtpInfoId(FtpInfoEntity ftpInfoByFtpInfoId) {
-        this.ftpInfoByFtpInfoId = ftpInfoByFtpInfoId;
-    }
-
-    public UserEntity getUserByCreatorId() {
-        return userByCreatorId;
-    }
-
-    public void setUserByCreatorId(UserEntity userByCreatorId) {
-        this.userByCreatorId = userByCreatorId;
+        return Objects.hash(id, guid, taskname, state, targetModel, createTime, creatorId, savePath, saveHost);
     }
 }

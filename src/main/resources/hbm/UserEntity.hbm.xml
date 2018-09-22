@@ -20,11 +20,5 @@
         <property name="privilege">
             <column name="privilege" sql-type="int(11)" not-null="true"/>
         </property>
-        <set name="tasksById" inverse="true">
-            <key>
-                <column name="creator_id"/>
-            </key>
-            <one-to-many not-found="ignore" class="top.macaulish.PLS.entity.TaskEntity"/>
-        </set>
     </class>
 </hibernate-mapping>

@@ -1,6 +1,5 @@
 package top.macaulish.PLS.entity;
 
-import java.util.Collection;
 import java.util.Objects;
 
 public class UserEntity {
@@ -9,7 +8,6 @@ public class UserEntity {
     private String username;
     private String password;
     private Integer privilege;
-    private Collection<TaskEntity> tasksById;
 
     public int getId() {
         return id;
@@ -67,13 +65,5 @@ public class UserEntity {
     public int hashCode() {
 
         return Objects.hash(id, guid, username, password, privilege);
-    }
-
-    public Collection<TaskEntity> getTasksById() {
-        return tasksById;
-    }
-
-    public void setTasksById(Collection<TaskEntity> tasksById) {
-        this.tasksById = tasksById;
     }
 }
