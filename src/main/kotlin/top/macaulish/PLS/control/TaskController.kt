@@ -1,5 +1,6 @@
 package top.macaulish.PLS.control
 
+import com.macaulish.top.coconut.util.DateKits
 import com.macaulish.top.coconut.util.FileKits
 import org.apache.commons.io.FileUtils
 import org.json.JSONArray
@@ -20,12 +21,9 @@ import top.macaulish.PLS.entity.TaskEntity
 import top.macaulish.PLS.gson.JsonResponse
 import top.macaulish.PLS.gson.TaskItem
 import java.io.*
-import java.net.URLConnection
-import java.nio.charset.Charset
 import java.util.*
 import java.sql.Timestamp
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Controller
 @RequestMapping(value = ["/task"])
@@ -59,7 +57,14 @@ class TaskController{
     @RequestMapping(value = ["/all.get"], method = [(RequestMethod.GET)],produces=["application/json;charset=utf-8"])
     @ResponseBody
     fun queryAllTask():String{
-        val tasks = taskDao.queryAllTask()
+        var tasks = taskDao.queryAllTask()
+        for(task in tasks){
+            if(queryTaskState(task.guid) == "done"){
+                task.state = "finish"
+                taskDao.saveOfUpdate(task)
+            }
+        }
+        tasks = taskDao.queryAllTask()
         val response:JsonResponse = JsonResponse()
         val tasklist = ArrayList<TaskItem>()
         for(task in tasks){
@@ -78,6 +83,14 @@ class TaskController{
             tasklist.add(item)
         }
         return response.successWithList(tasklist)
+    }
+
+    fun queryTaskState(taskGuid:String):String{
+        var file = File("$resultParent/$taskGuid/result.zip")
+        if(file.exists()){
+            return "done"
+        }
+        return "handling"
     }
 
     @RequestMapping(value = ["/new.do"], method = [(RequestMethod.POST)])
@@ -100,11 +113,13 @@ class TaskController{
     }
 
     @RequestMapping(value = ["/add.do"], method = [(RequestMethod.GET)])
-    fun addContent(taskGuid:String):String{
+    fun addContent(taskGuid:String):ModelAndView{
+        val mv = ModelAndView()
+        mv.viewName = "upload"
         val task = TaskEntity()
         task.guid = taskGuid
-        val temp = taskDao.queryTask(taskGuid) ?: return "error"
-        return "upload"
+        mv.addObject("task",task)
+        return mv
     }
 
     @RequestMapping(value = ["/check.do"], method = [(RequestMethod.GET)])
@@ -130,7 +145,7 @@ class TaskController{
     @ResponseBody
     @RequestMapping(value= ["/upload.do"],method = [(RequestMethod.POST)])
     fun uploadFile(@RequestParam("files[]")file:MultipartFile,taskGuid:String):String {
-        var task = taskDao.queryTask(taskGuid)?:return JsonResponse().failWith("Task doesn't exist.")
+        var task: TaskEntity = taskDao.queryTask(taskGuid) ?: return JsonResponse().failWith("Task doesn't exist.")
         val fileInfo = FileInfoEntity()
         fileInfo.fileName = file.originalFilename
         fileInfo.fileSize = FileKits.toReadableSize(file.size)
@@ -215,34 +230,51 @@ class TaskController{
         return "pls"
     }
 
-    @RequestMapping(value = ["/download.do"], method = [(RequestMethod.GET)])
+    @RequestMapping(value = ["/download.do"], method = [(RequestMethod.GET)],produces=["application/json;charset=utf-8"])
     @ResponseBody
     fun taskDownload(taskGuid:String): ResponseEntity<ByteArray> {
         var fileName = "unknown"
-
         val headers = HttpHeaders()
-        val file = File("$resultParent/$taskGuid/${taskGuid}.zip")
+        val file = File("$resultParent/$taskGuid/result.zip")
         if(!file.exists() || !file.isFile) return ResponseEntity("File doesn't exist!".toByteArray(),headers, HttpStatus.BAD_REQUEST)
         val task = taskDao.queryTask(taskGuid)
-        fileName =if(task != null) task.taskname else file.name
+        fileName =if(task != null) task.taskname+".zip" else file.name
         headers.contentType = MediaType.APPLICATION_OCTET_STREAM
         headers.setContentDispositionFormData("attachment", fileName)
         return ResponseEntity(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED)
     }
 
+    @RequestMapping(value=["/source.get"],method = [(RequestMethod.GET)])
+    @ResponseBody
+    fun taskSource(taskGuid:String):String{
+        return try {
+            val files = taskDao.querySource(taskGuid)
+            JsonResponse().successWithList(files)
+        }catch (e:Exception){
+            JsonResponse().failWith("Fail to get the files.")
+        }
+    }
 
-
-fun sendTask(taskGuid:String):Boolean{
+    fun sendTask(taskGuid:String):Boolean{
         val source = "$taskParent/$taskGuid"
         val result = "$resultParent/$taskGuid"
         val log = "log.txt"
-        val sh = "CUDA_VISIBLE_DEVICES=3 python2 \$DETECTRON/tools/infer_simple.py \\\n" +
+        val sh = "CUDA_VISIBLE_DEVICES=3 python2 \$DETECTRON/tools/infer_eng.py \\\n" +
                 "\t--cfg \$DETECTRON/configs/panet/mask_bpa_adp_dcn_ctx_hh_res50.yaml \\\n" +
                 "\t--image-ext jpg \\\n" +
+                "\t--result-ext xml \\\n"+
+                "\t--use-zip True \\\n"+
                 "\t--output-dir " + result + " \\\n" +
                 "\t--wts /DATACENTER1/wdk/tmp/mask_bpa_adp_dcn_hh_prelu_res50/train/coco_2017_train/generalized_rcnn/model_final.pkl \\\n" +
-                "\t"+source + " | " + log+"\\"
-        var file =FileKits.getOrCreate("$taskParent/start.sh")
+                "\t"+source + " | tee " + result+"/"+log+"\\\n"
+        val strPath = "$taskParent/start.sh"
+        val file = File(strPath)
+        val fileParent = file.parentFile
+        if (!fileParent.exists()) {
+            fileParent.mkdirs()
+        }
+        file.createNewFile()
+
         try {
             var out= FileOutputStream(file,false)
             val p = PrintStream(out)

@@ -42,6 +42,7 @@ class TaskDao {
         hibernate.save(fileInfo)
     }
 
+    @Transactional
     fun query(id:Int):UserEntity?{
         return hibernate.get(UserEntity::class.java,id)
     }
@@ -62,5 +63,12 @@ class TaskDao {
         if(tasklist.isEmpty()) return false
         hibernate.delete(tasklist[0])
         return true
+    }
+
+    @Transactional
+    fun querySource(taskGuid:String):ArrayList<FileInfoEntity>{
+        val ex = FileInfoEntity()
+        ex.taskGuid = taskGuid
+        return hibernate.findByExample(ex) as ArrayList<FileInfoEntity>
     }
 }

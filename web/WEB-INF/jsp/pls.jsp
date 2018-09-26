@@ -56,7 +56,6 @@
                     <button v-on:click="downloadTask(item.guid)" v-if="showDownload(item.state)" class="btn btn-lg btn-primary">Download</button>
                     <button v-on:click="deleteTask(item.guid)" v-if="showDelete(item.state)" class="btn btn-lg btn-dark">Delete</button>
                     <button v-on:click="addContent(item.guid)" v-if="showAdd(item.state)" class="btn btn-lg btn-outline-primary">More</button>
-
                 </div>
             </div>
         </div>

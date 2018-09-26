@@ -26,9 +26,10 @@
     <!-- CSS adjustments for browsers with JavaScript disabled -->
     <noscript><link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/jquery.fileupload-noscript.css"></noscript>
     <noscript><link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/jquery.fileupload-ui-noscript.css"></noscript>
-    <link rel="stylesheet" href="/static/css/pls.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pls.css">
+
 </head>
-<body>
+<body >
 
 <div id="uploadFrame" class="container container-body">
     <!-- The file upload form used as target for the file upload widget -->
@@ -48,7 +49,6 @@
                 <button type="reset" class="cancel">Cancel upload</button>
                 <button type="button" class="delete">Delete</button>
                 <input type="checkbox" class="toggle">
-                <button @click="getReady()" type="button"  class="btn btn-primary">Launch Task</button>
                 <!-- The global file processing state -->
                 <span class="fileupload-process"></span>
             </div>
@@ -102,32 +102,32 @@
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download fade">
-        <td>
-            <span class="preview">
-                {% if (file.thumbnailUrl) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
-                {% } %}
-            </span>
-        </td>
-        <td>
-            <p class="name">
-                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
-            </p>
-            {% if (file.error) { %}
-                <div><span class="error">Error</span> {%=file.error%}</div>
-            {% } %}
-        </td>
-        <td>
-            <span class="size">{%=o.formatFileSize(file.size)%}</span>
-        </td>
-        <td>
-            <button class="delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>Delete</button>
-            <input type="checkbox" name="delete" value="1" class="toggle">
-        </td>
-    </tr>
-{% } %}
+<%--{% for (var i=0, file; file=o.files[i]; i++) { %}--%>
+    <%--<tr class="template-download fade">--%>
+        <%--<td>--%>
+            <%--<span class="preview">--%>
+                <%--{% if (file.thumbnailUrl) { %}--%>
+                    <%--<a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>--%>
+                <%--{% } %}--%>
+            <%--</span>--%>
+        <%--</td>--%>
+        <%--<td>--%>
+            <%--<p class="name">--%>
+                <%--<a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>--%>
+            <%--</p>--%>
+            <%--{% if (file.error) { %}--%>
+                <%--<div><span class="error">Error</span> {%=file.error%}</div>--%>
+            <%--{% } %}--%>
+        <%--</td>--%>
+        <%--<td>--%>
+            <%--<span class="size">{%=o.formatFileSize(file.size)%}</span>--%>
+        <%--</td>--%>
+        <%--<td>--%>
+            <%--<button class="delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>Delete</button>--%>
+            <%--<input type="checkbox" name="delete" value="1" class="toggle">--%>
+        <%--</td>--%>
+    <%--</tr>--%>
+<%--{% } %}--%>
 </script>
 
 
@@ -163,8 +163,7 @@
 <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.js"></script>
-<script src="${pageContext.request.contextPath}/static/js/pls.js"></script>
-
+<script src="${pageContext.request.contextPath}/static/js/upload.js"></script>
 
 </body>
 </html>

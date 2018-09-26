@@ -15,7 +15,9 @@ newTaskApp = new Vue({
                     console.log(res);
                     console.log(res.data);
                     if(res.data.state === "success") {
-                    window.open("/task/add.do?taskGuid=" + this.taskName, "_blank");
+                        var guid = res.data.data.guid;
+                        window.location.reload();
+                        //window.open("/task/add.do?taskGuid="+ guid, "_blank");
                     }else {
                         alert(res.data.data)
                     }
@@ -30,8 +32,10 @@ newTaskApp = new Vue({
 
 var taskManager;
 taskManager= new Vue({
+
     el: "#taskManager",
     data: {
+        modelState:"busy",
         taskList : []
     },
     methods: {
@@ -41,11 +45,13 @@ taskManager= new Vue({
                 console.log(res.data.data);
                 this.taskList = res.data.data;
             }, function (res) {
+
                 console.log('失败');
                 console.log(res);
                 console.log(res.data);
-            })
+            });
         },
+
         processStyle:function (progress) {
             return "width:"+progress+"%";
         },
@@ -115,7 +121,7 @@ taskManager= new Vue({
             alert("Developing...pause");
         },
         downloadTask:function (guid) {
-            alert("Developing...download");
+            window.open('/task/download.do?'+'taskGuid='+guid);
         },
         deleteTask:function (guid) {
             this.$http.get('/task/delete.do?'+'taskGuid='+guid).then(function (res) {
@@ -127,30 +133,6 @@ taskManager= new Vue({
         },
         addContent:function (guid) {
             window.open("/task/add.do?taskGuid="+guid,"_blank");
-        }
-    }
-});
-
-const uploadApp = new Vue({
-    el:"#uploadFrame",
-    data:{
-        //taskGuid:document.getElementById("taskGuid").valueOf()
-    },
-    methods:{
-        getReady:function(){
-            const guid = document.getElementById("taskGuid").value;
-
-            this.$http.get("/task/ready.do?"+"taskGuid="+guid)
-                .then(function(res){
-                    console.log(res);
-                    console.log(res.data);
-                    window.open("/task","_self");
-                },function(res){
-                    console.log('失败')
-                    console.log(res);
-                    console.log(res.data);
-                    window.open("/error","_self");
-                })
         }
     }
 });

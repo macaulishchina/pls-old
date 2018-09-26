@@ -64,7 +64,7 @@
             // The minimum allowed file size in bytes:
             minFileSize: undefined, // No minimal file size
             // The limit of files to be uploaded:
-            maxNumberOfFiles: 10,
+            maxNumberOfFiles: 1000,
 
 
             // Function returning the current number of files,
@@ -117,7 +117,6 @@
                 }
                 return dfd.promise();
             }
-
         }
 
     });
